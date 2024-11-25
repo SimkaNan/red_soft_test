@@ -1,0 +1,256 @@
+basePath: /
+definitions:
+  controller.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  controller.Friendship:
+    properties:
+      first_id:
+        type: integer
+      second_id:
+        type: integer
+    required:
+    - first_id
+    - second_id
+    type: object
+  model.User:
+    properties:
+      age:
+        type: integer
+      emails:
+        items:
+          type: string
+        type: array
+      gender:
+        type: string
+      id:
+        type: integer
+      middle_name:
+        type: string
+      name:
+        type: string
+      nationality:
+        type: string
+      surname:
+        type: string
+    required:
+    - age
+    - gender
+    - middle_name
+    - name
+    - nationality
+    - surname
+    type: object
+  model.UserUpdate:
+    properties:
+      age:
+        type: integer
+      gender:
+        type: string
+      middle_name:
+        type: string
+      name:
+        type: string
+      nation:
+        type: string
+      surname:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API server for library
+  title: users-library
+  version: "1.0"
+paths:
+  /friendships/create:
+    post:
+      consumes:
+      - application/json
+      description: CreateUsersFriendships
+      operationId: create-user-friendships
+      parameters:
+      - description: Data for create friendships
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controller.Friendship'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User friendships successfully created
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: CreateUsersFriendships
+      tags:
+      - friendships
+  /friendships/list:
+    get:
+      description: listUserFriends
+      operationId: list-users-friends
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User friends list
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: ListUserFriends
+      tags:
+      - friendships
+  /users/create:
+    post:
+      consumes:
+      - application/json
+      description: CreateUser
+      operationId: create-user
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully created
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: CreateUser
+      tags:
+      - users
+  /users/getByID:
+    get:
+      description: getUsersByID
+      operationId: get-user-Byid
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user data
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/controller.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: GetUserByID
+      tags:
+      - users
+  /users/getBySurname:
+    get:
+      description: getUsersBySurname
+      operationId: get-user-by-surname
+      parameters:
+      - description: surname
+        in: query
+        name: surname
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Get user data
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/controller.Error'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: GetUserBySurname
+      tags:
+      - users
+  /users/list:
+    get:
+      description: listUsers
+      operationId: list-users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users list
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: ListUsers
+      tags:
+      - users
+  /users/update:
+    put:
+      consumes:
+      - application/json
+      description: UpdateUser
+      operationId: update-user
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Data for Update user
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully updated
+          schema:
+            type: string
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/controller.Error'
+      summary: UpdateUser
+      tags:
+      - users
+swagger: "2.0"

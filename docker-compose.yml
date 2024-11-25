@@ -1,0 +1,27 @@
+version: '3'
+services:
+  library:
+    container_name: service
+    image: service
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    build: ./
+    command: ./wait_for_postgres.sh db ./main
+  db:
+    image: postgres:latest
+    container_name: psql
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+#      - ./schema/000001_init.up.sql:/docker-entrypoint-initdb.d/create.sql
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
