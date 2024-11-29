@@ -18,7 +18,7 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 func (r *UsersRepository) ListUsers(ctx context.Context) ([]model.User, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
-		return nil, fmt.Errorf("Error to begin tx on ListUser:", err)
+		return nil, fmt.Errorf("Error to begin tx on ListUser: %w", err)
 	}
 
 	var users []model.User
@@ -26,7 +26,7 @@ func (r *UsersRepository) ListUsers(ctx context.Context) ([]model.User, error) {
 	err = r.db.SelectContext(ctx, &users, query)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("Error to list users: %v", err)
+		return nil, fmt.Errorf("Error to list users: %w", err)
 	}
 
 	err = r.GetEmails(ctx, users)
@@ -45,7 +45,7 @@ func (r *UsersRepository) GetUserByID(ctx context.Context, userId int) (*model.U
 	err = r.db.GetContext(ctx, &user, query, userId)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("Error to get user by id on repo: %v", err)
+		return nil, fmt.Errorf("Error to get user by id on repo: %w", err)
 	}
 
 	var emails []model.Email
@@ -54,7 +54,7 @@ func (r *UsersRepository) GetUserByID(ctx context.Context, userId int) (*model.U
 	err = r.db.SelectContext(ctx, &emails, query, userId)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("Error to get user emails by id on repo: %v", err)
+		return nil, fmt.Errorf("Error to get user emails by id on repo: %w", err)
 	}
 
 	for _, email := range emails {
@@ -75,7 +75,7 @@ func (r *UsersRepository) GetUserBySurname(ctx context.Context, surname string) 
 	err = r.db.GetContext(ctx, &user, query, surname)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("Error to get user by id on repo: %v", err)
+		return nil, fmt.Errorf("Error to get user by id on repo: %w", err)
 	}
 
 	var emails []model.Email
@@ -84,7 +84,7 @@ func (r *UsersRepository) GetUserBySurname(ctx context.Context, surname string) 
 	err = r.db.SelectContext(ctx, &emails, query, user.Id)
 	if err != nil {
 		tx.Rollback()
-		return nil, fmt.Errorf("Error to get user emails by id on repo: %v", err)
+		return nil, fmt.Errorf("Error to get user emails by id on repo: %w", err)
 	}
 
 	for _, email := range emails {
@@ -98,7 +98,7 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user *model.User) (int
 	var id int
 	tx, err := r.db.Begin()
 	if err != nil {
-		return 0, fmt.Errorf("Error to begin tx on CreateUser:", err)
+		return 0, fmt.Errorf("Error to begin tx on CreateUser: %w", err)
 	}
 
 	query := fmt.Sprintf("INSERT INTO %s (name, surname, middle_name, age, nation, gender) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", userTable)
